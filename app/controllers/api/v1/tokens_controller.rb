@@ -23,9 +23,9 @@ class Api::V1::TokensController < ApplicationController
     @user = User.find(params[:id])
   rescue ActiveRecord::RecordNotFound => e
     render json: {
-      status: :unprocessable_entity,
+      status: 422,
       errors: e.message
-    }
+    }, status: :unprocessable_entity
   end
 
   def create_encrypted_code
