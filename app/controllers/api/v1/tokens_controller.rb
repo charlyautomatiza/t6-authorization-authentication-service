@@ -13,9 +13,9 @@ class Api::V1::TokensController < ApplicationController
       algorithm: 'HS256',
       exp: 1.day.from_now
     }
-    token = encode({username: @user.username, user_id: @user.id}, true, options)
+    token = encode({ user_id: @user.id, username: @user.username }, true, options)
 
-    render json: { status: 201, message: "Token created successfully assigned to #{@user.username}", token: token }
+    render json: { status: 201, message: "Token created successfully assigned to #{@user.username}", token: token }, status: :created
   end
 
   private
