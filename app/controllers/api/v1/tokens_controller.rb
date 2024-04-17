@@ -4,22 +4,12 @@ class Api::V1::TokensController < ApplicationController
   include Tokenizer
 
   before_action :set_user
-  before_action :set_key_and_pass_phrase, only: [:generate_token]
-  before_action :create_encrypted_code, only: [:generate_token]
-
-  def generate_token
-    options = {
-      secret_key: @encrypted_code,
-      algorithm: 'HS256',
-      exp: 1.day.from_now
-    }
-    token = encode({ user_id: @user.id, username: @user.username }, true, options)
-
-    render json: { status: 201, message: "Token created successfully assigned to #{@user.username}", token: token }, status: :created
-  end
+  # before_action :set_key_and_pass_phrase, only: [:generate_token]
+  # before_action :create_encrypted_code, only: [:generate_token]
 
   def create_token
     generate_authentication_token if params[:token_type] == 'authentication'
+    generate_authorization_token if params[:token_type] == 'authorization'
   end
 
   private
@@ -67,6 +57,20 @@ class Api::V1::TokensController < ApplicationController
       status: 422,
       error: e.message
     }, status: :unprocessable_entity
+  end
+
+  def generate_authorization_token
+    set_key_and_pass_phrase
+    create_encrypted_code
+
+    options = {
+      secret_key: @encrypted_code,
+      algorithm: 'HS256',
+      exp: 1.day.from_now
+    }
+    token = encode({ user_id: @user.id, username: @user.username }, true, options)
+
+    render json: { status: 201, message: "Token created successfully assigned to #{@user.username}", token: token }, status: :created
   end
 
   def remove_current_token
