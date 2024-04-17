@@ -1,3 +1,3 @@
 class User < ApplicationRecord
-  has_one :token
+  has_many :tokens
 end
