@@ -51,3 +51,7 @@ gem "jwt", "~> 2.8"
 gem "openssl", "~> 3.2"
 
 gem "dotenv", "~> 3.1"
+
+gem "rswag", "~> 2.13"
+
+gem "rack-cors", "~> 2.0"

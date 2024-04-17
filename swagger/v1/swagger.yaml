@@ -1,0 +1,73 @@
+---
+openapi: 3.0.0
+info:
+  title: Auth Service
+  description: API for authoentication and authorization service
+  version: 1.0.0
+servers:
+# - url: https://virtserver.swaggerhub.com/MauricioNavarro/authorization-authentication-service/1.0.0
+#   description: SwaggerHub API Auto Mocking
+# - url: https://authorization-authentication-service.onrender.com/api/v1/tokens/:token_type
+- url: http://localhost:3000/api/v1/
+  description: SwaggerHub API Auto Mocking
+paths:
+  /tokens/{token_type}:
+    post:
+      summary: Creates a new token for authentication or authorization
+      parameters:
+      - name: token_type
+        in: path
+        description: "Pass an token type, this could be authorization or authentication"
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: "User id, owner of the token"
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Token'
+        required: true
+      responses:
+        "201":
+          description: Success reponse and token created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        "422":
+          description: Failed response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableEntityResponse'
+components:
+  schemas:
+    Token:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: d290f1ee-6c54-4b01-90e6-d701748f0851
+    SuccessResponse:
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 201
+        message:
+          type: string
+          example: Token was successfully created
+    UnprocessableEntityResponse:
+      required:
+      - error
+      - status
+      type: object
+      properties:
+        status:
+          type: integer
+          example: 422
+        error:
+          type: string
+          example: User not found with id...
