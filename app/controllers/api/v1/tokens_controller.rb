@@ -4,8 +4,7 @@ class Api::V1::TokensController < ApplicationController
   include Tokenizer
 
   before_action :set_user
-  # before_action :set_key_and_pass_phrase, only: [:generate_token]
-  # before_action :create_encrypted_code, only: [:generate_token]
+  before_action :remove_current_token, only: [:create_token]
 
   def create_token
     generate_authentication_token if params[:token_type] == 'authentication'
@@ -41,15 +40,13 @@ class Api::V1::TokensController < ApplicationController
   end
 
   def generate_authentication_token
-    remove_current_token unless @user.token.nil?
+    @token = @user.tokens.build(token_type: params[:token_type])
 
-    @user.build_token(token_type: params[:token_type])
-
-    if @user.save
+    if @token.save
       render json: {
         status: 201,
-        message: 'Token created successfully',
-        token: @user.token.token
+        message: "Token was successfully created and assigned to user #{@user.username}",
+        token: @token.token
       }, status: :created
     end
   rescue ActiveRecord::RecordNotSaved => e
@@ -70,10 +67,16 @@ class Api::V1::TokensController < ApplicationController
     }
     token = encode({ user_id: @user.id, username: @user.username }, true, options)
 
-    render json: { status: 201, message: "Token created successfully assigned to #{@user.username}", token: token }, status: :created
+    @token = @user.tokens.build(token: token, token_type: params[:token_type])
+
+    if @token.save
+      render json: { status: 201, message: "Token created successfully assigned to #{@user.username}", token: token }, status: :created
+    else
+      render json: { status: 422, error: @token.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 
   def remove_current_token
-    @user.token.delete
+    @user.tokens.find_by_token_type(params[:token_type]).delete unless @user.tokens.find_by_token_type(params[:token_type]).nil?
   end
 end
