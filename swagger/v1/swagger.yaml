@@ -5,10 +5,7 @@ info:
   description: API for authoentication and authorization service
   version: 1.0.0
 servers:
-# - url: https://virtserver.swaggerhub.com/MauricioNavarro/authorization-authentication-service/1.0.0
-#   description: SwaggerHub API Auto Mocking
-# - url: https://authorization-authentication-service.onrender.com/api/v1/tokens/:token_type
-- url: http://localhost:3000/api/v1/
+- url: https://authorization-authentication-service.onrender.com/api/v1/
   description: SwaggerHub API Auto Mocking
 paths:
   /tokens/{token_type}:
