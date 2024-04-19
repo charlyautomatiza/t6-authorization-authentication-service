@@ -8,22 +8,38 @@ servers:
 - url: https://authorization-authentication-service.onrender.com/api/v1/
   description: SwaggerHub API Auto Mocking
 paths:
-  /tokens/{token_type}:
+  /tokens/authentication:
     post:
-      summary: Creates a new token for authentication or authorization
-      parameters:
-      - name: token_type
-        in: path
-        description: "Pass an token type, this could be authorization or authentication"
-        required: true
-        schema:
-          type: string
+      summary: Creates a new token to authenticate a user
       requestBody:
         description: "User id, owner of the token"
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Token'
+              $ref: '#/components/schemas/UserId'
+        required: true
+      responses:
+        "201":
+          description: Success reponse and token created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        "422":
+          description: Failed response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnprocessableEntityResponse'
+  /tokens/authorization:
+    post:
+      summary: Creates a new token to authorize API resquests
+      requestBody:
+        description: "User id, owner of the token"
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserId'
         required: true
       responses:
         "201":
@@ -40,7 +56,7 @@ paths:
                 $ref: '#/components/schemas/UnprocessableEntityResponse'
 components:
   schemas:
-    Token:
+    UserId:
       type: object
       properties:
         id:
