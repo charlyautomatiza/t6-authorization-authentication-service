@@ -13,7 +13,7 @@ module Authorizable
     @token = @user.tokens.build(token: jwt_token, token_type: 'authorization')
 
     if @token.save
-      render json: { status: 201, message: "Token created successfully assigned to #{@user.username}", token: @token }, status: :created
+      render json: { status: 201, message: "Token created successfully assigned to #{@user.username}", token: @token.token }, status: :created
     else
       render json: { status: 422, error: @token.errors.full_messages }, status: :unprocessable_entity
     end
