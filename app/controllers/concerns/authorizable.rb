@@ -2,10 +2,22 @@ module Authorizable
   extend ActiveSupport::Concern
 
   included do
-    before_action :set_key_and_pass_phrase, only: %i[ create_authorization_token ]
-    before_action :create_encrypted_code, only: %i[ create_authorization_token ]
-    before_action :set_options, only: %i[ create_authorization_token ]
+    before_action :set_key_and_pass_phrase, only: %i[ create_authorization_token authorize ]
+    before_action :create_encrypted_code, only: %i[ create_authorization_token authorize ]
+    before_action :set_options, only: %i[ create_authorization_token authorize ]
     before_action :set_jwt_body, only: %i[ create_authorization_token ]
+  end
+
+  def authorize
+    token = request.headers['Authorization']
+    user = decode(token, @options)
+
+    if user.nil?
+      render json: { status: 401 }, status: :unauthorized
+    else
+      render json: { status: 200 }, status: :ok
+    end
+
   end
 
   def create_authorization_token

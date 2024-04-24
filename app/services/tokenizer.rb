@@ -9,4 +9,12 @@ module Tokenizer
 
     JWT.encode payload, options[:secret_key], options[:algorithm]
   end
+
+  def decode(token, options)
+    decoded_token = JWT.decode(token, options[:secret_key], true, { algorithm: options[:algorithm] })
+    user = decoded_token[0]['user_id']
+    User.find(user)
+  rescue => _e
+    nil
+  end
 end
