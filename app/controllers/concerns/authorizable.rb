@@ -22,10 +22,9 @@ module Authorizable
 
   def create_authorization_token
     jwt_token = encode(@jwt_body, true, @options)
-    @token = @user.tokens.build(token: jwt_token, token_type: 'authorization')
 
-    if @token.save
-      render json: { status: 201, message: "Token created successfully assigned to #{@user.username}", token: @token.token }, status: :created
+    if @user.update(api_key: jwt_token)
+      render json: { status: 201, message: "Token created successfully assigned to #{@user.username}", token: @user.api_key }, status: :created
     else
       render json: { status: 422, error: @token.errors.full_messages }, status: :unprocessable_entity
     end
