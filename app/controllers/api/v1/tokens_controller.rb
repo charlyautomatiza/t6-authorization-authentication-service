@@ -3,7 +3,6 @@ require 'openssl'
 class Api::V1::TokensController < ApplicationController
   before_action :set_user, only: %i[ create_authorization_token create_authentication_token ]
 
-  include Tokenizer
   include Authorizable
   include Authenticable
 
