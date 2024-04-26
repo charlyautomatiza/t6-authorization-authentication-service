@@ -2,7 +2,6 @@ require 'openssl'
 
 class Api::V1::TokensController < ApplicationController
   before_action :set_user, only: %i[ create_authorization_token create_authentication_token ]
-  before_action :remove_current_token, only: %i[ create_authorization_token create_authentication_token ]
 
   include Tokenizer
   include Authorizable
@@ -17,9 +16,5 @@ class Api::V1::TokensController < ApplicationController
       status: 422,
       errors: e.message
     }, status: :unprocessable_entity
-  end
-
-  def remove_current_token
-    @user.tokens.where(token_type: request.path.split("/")[-1]).destroy_all unless @user.tokens.empty?
   end
 end
