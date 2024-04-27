@@ -3,10 +3,9 @@ Rails.application.routes.draw do
   mount Rswag::Api::Engine => '/api-docs'
   namespace :api do
     namespace :v1 do
-      post '/tokens/authentication', to: 'tokens#create_authentication_token'
-      post '/tokens/authorization', to: 'tokens#create_authorization_token'
-      post '/authorize', to: 'tokens#authorize'
-      post '/authenticate', to: 'tokens#authenticate'
+      post '/tokens/new', to: 'tokens#create_access_token'
+      post '/authorize', to: 'auth#authorize'
+      post '/authenticate', to: 'auth#authenticate'
     end
   end
 end
