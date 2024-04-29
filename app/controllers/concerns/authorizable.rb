@@ -3,7 +3,7 @@ module Authorizable
 
   def authorize
     auht_token = request.headers['Authorization']
-    raise ActiveRecord::RecordNotFound if User.find_by(api_key: auht_token).nil?
+    raise ActiveRecord::RecordNotFound if  User.where.not(api_key: nil).find_by(api_key: auht_token).nil?
 
     render json: {}, status: :ok
   rescue => _e
