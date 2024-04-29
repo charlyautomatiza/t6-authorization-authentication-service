@@ -2,8 +2,8 @@ module Authenticable
   extend ActiveSupport::Concern
 
   included do
-    before_action :set_params
-    before_action :invalid_params?
+    before_action :set_params, only: %i[ authenticate ]
+    before_action :invalid_params?, only: %i[ authenticate ]
   end
 
   def authenticate
