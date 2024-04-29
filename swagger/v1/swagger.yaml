@@ -11,6 +11,8 @@ paths:
   /tokens/new:
     post:
       summary: Creates a new token
+      security:
+        - authorization: []
       requestBody:
         description: "User id, owner of the token"
         content:
@@ -34,31 +36,27 @@ paths:
   /authorize:
     post:
       summary: Authorize the API request based on header parameter
-      parameters:
-        - in: header
-          name: Authorization
-          schema:
-            type: string
-          required: true
+      security:
+        - authorization: []
       responses:
-        "201":
-          description: Success reponse and token created
+        "200":
+          description: Success reponse and authorized access
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SuccessResponse'
-        "422":
-          description: Failed response
+                type: object
+        "401":
+          description: 'Filed response and unauthorized access' 
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UnprocessableEntityResponse'
+                $ref: '#/components/schemas/FailedResponse'
 components:
   securitySchemes:
-    Authorization:
+    authorization:
       type: apiKey
       in: header
-      name: X-Username
+      name: Authorization
   schemas:
     UserId:
       type: object
@@ -88,3 +86,5 @@ components:
         error:
           type: string
           example: User not found with id...
+    FailedResponse:
+      type: object
